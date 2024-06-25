@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createForm , getForm, getForms ,updateForm , deleteForm} from "../controllers/crud.controller.js";
+import { createForm , getForm, getForms ,updateForm , deleteForm,createCarrera} from "../controllers/crud.controller.js";
 
 const router = Router();
 
@@ -18,4 +18,5 @@ router.put("/:id",updateForm);
 //ruta para borrar un formulario
 router.delete("/:id",deleteForm);
 
+router.post("/carrera",createCarrera);
 export default router;

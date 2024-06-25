@@ -1,5 +1,6 @@
 import Form from "../models/form.model.js"
-
+import Carrera from "../models/carrera.model.js"
+/*
 export async function createForm(req, res) {
     try {
         const data =req.body;
@@ -15,9 +16,8 @@ export async function createForm(req, res) {
         res.status(500).json({message: error.message});
     }
 }
-    
 
-
+*/
 export async function getForms(req,res) {
     try {
         const dataForms = await Form.find();
@@ -85,10 +85,11 @@ export async function updateForm(req,res){
 }
 
 export async function deleteForm(req,res){
+    const id = req.params.id;
     try {
-        const id = req.params.id;
         
-        const form = await Form.finByIdAndDelete(id);
+        
+        const form = await Form.findByIdAndDelete(id);
         
         if(!form){
             return res.status(404).json({
@@ -103,6 +104,58 @@ export async function deleteForm(req,res){
         })
     } catch (error) {
         res.status(500).json({message: error.message})
+    }
+}
+
+export async function createCarrera(req, res) {
+    try {
+        const { carrera } = req.body;
+
+        if (!carrera) {
+            return res.status(400).json({ message: "El nombre de la carrera es obligatorio" });
+        }
+
+        const newCarrera = new Carrera({ carrera });
+        const carreraSaved = await newCarrera.save();
+
+        res.status(201).json({
+            message: "Carrera creada correctamente",
+            data: carreraSaved
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export async function createForm(req, res) {
+    try {
+        const { carreraNombre, ...formData } = req.body;
+
+        if (!carreraNombre) {
+            return res.status(400).json({ message: "El nombre de la carrera es obligatorio" });
+        }
+
+        // Buscar la carrera
+        const carrera = await Carrera.findOne({ carrera: carreraNombre });
+
+        if (!carrera) {
+            return res.status(404).json({ message: "La carrera especificada no existe" });
+        }
+
+        // Crear el formulario
+        const newForm = new Form({
+            ...formData,
+            carrera: carrera._id
+        });
+
+        const formSaved = await newForm.save();
+
+        res.status(201).json({
+            message: "Formulario creado correctamente",
+            data: formSaved
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
     }
 }
 

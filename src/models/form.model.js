@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import Carrera from "../models/carrera.model.js";
 
 const formSchema = new mongoose.Schema({
     nombreCompleto: {
@@ -26,6 +27,11 @@ const formSchema = new mongoose.Schema({
     },
     direccion: {
         type: String,
+        required: true,
+    },
+    carrera: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Carrera',
         required: true,
     },
 });
